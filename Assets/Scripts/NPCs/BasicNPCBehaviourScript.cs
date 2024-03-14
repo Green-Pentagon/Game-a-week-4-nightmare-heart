@@ -41,7 +41,8 @@ public class BasicNPCBehaviourScript : MonoBehaviour
         {
             //update running direction & rotation of transform
             runDirection = Vector3.Normalize(body.position - player.position);
-            transform.LookAt(player.position);
+            transform.LookAt(new Vector3(player.position.x,transform.position.y,player.position.z)); //look at player, ignoring Z position.
+            transform.Rotate(new Vector3(0.0f, 180.0f, 0.0f)); //face away from player
         }
 
         if (playerSeen && !caught)
