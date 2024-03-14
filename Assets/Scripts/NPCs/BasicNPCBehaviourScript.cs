@@ -5,10 +5,22 @@ using UnityEngine;
 public class BasicNPCBehaviourScript : MonoBehaviour
 {
     public Rigidbody player;
+
     private Rigidbody body;
-    private bool playerSeen = false;
+    private Vector3 runDirection;
     private float speedMultiplier;
+    private float fearRunningTime = 5.0f;
+    private bool playerSeen = false;
+    private bool playerInRange = false;
     private bool caught = false;
+
+
+    IEnumerator RunningInFear()
+    {
+        yield return new WaitForSeconds(fearRunningTime);
+        playerSeen = false;
+    }
+
 
     // Start is called before the first frame update
     void Start()
@@ -25,9 +37,16 @@ public class BasicNPCBehaviourScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector3 runDirection = Vector3.Normalize(body.position - player.position);
+        if (playerInRange && !caught)
+        {
+            //update running direction & rotation of transform
+            runDirection = Vector3.Normalize(body.position - player.position);
+            transform.LookAt(player.position);
+        }
+
         if (playerSeen && !caught)
         {
+            //run in the last known run direction
             body.velocity = runDirection * speedMultiplier;
         }
     }
@@ -44,8 +63,8 @@ public class BasicNPCBehaviourScript : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            
             playerSeen = true;
+            playerInRange = true;
         }
     }
 
@@ -53,7 +72,8 @@ public class BasicNPCBehaviourScript : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            playerSeen = false;
+            playerInRange = false;
+            StartCoroutine(RunningInFear());
         }
     }
 }
