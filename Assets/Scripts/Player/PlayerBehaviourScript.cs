@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class PlayerBehaviourScript : MonoBehaviour
 {
+    public const float SPEED_MULTIPLIER = 5.0f;
+
     private Rigidbody body;
-    private float velocityMultiplier = 5.0f;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +28,7 @@ public class PlayerBehaviourScript : MonoBehaviour
         
         if (horizInput != vertInput)
         {
-            body.velocity = new Vector3(horizInput * velocityMultiplier, body.velocity.y, vertInput * velocityMultiplier);
+            body.velocity = new Vector3(horizInput * SPEED_MULTIPLIER, body.velocity.y, vertInput * SPEED_MULTIPLIER);
         }
        
         
