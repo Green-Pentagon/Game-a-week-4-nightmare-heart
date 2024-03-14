@@ -26,7 +26,7 @@ public class BasicNPCBehaviourScript : MonoBehaviour
     void Start()
     {
         body = GetComponent<Rigidbody>();
-        speedMultiplier = PlayerBehaviourScript.SPEED_MULTIPLIER * 0.75f; //grabs the 
+        speedMultiplier = PlayerBehaviourScript.SPEED_MULTIPLIER * 0.75f; //grabs the speed of player and multiplies it by a factor.
     }
 
     // Update is called once per frame
