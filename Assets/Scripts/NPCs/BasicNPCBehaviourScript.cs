@@ -5,10 +5,11 @@ using UnityEngine;
 public class BasicNPCBehaviourScript : MonoBehaviour
 {
     public Rigidbody player;
+    public float speedMultiplier = 0.75f;
 
     private Rigidbody body;
     private Vector3 runDirection;        //direction which the NPC runs away in.
-    private float speedMultiplier;       //how fast the NPC runs, relative to speed of player.
+    private float ActorSpeed;            //how fast the NPC runs, relative to speed of player multiplied by the speedMultiplier
     private float fearRunningTime = 5.0f;//how long the NPC runs away after they spotted the player
     private bool playerSeen = false;     //has the NPC seen the player?
     private bool playerInRange = false;  //is the player inside of the visibility collider?
@@ -31,7 +32,7 @@ public class BasicNPCBehaviourScript : MonoBehaviour
     void Start()
     {
         body = GetComponent<Rigidbody>();
-        speedMultiplier = PlayerBehaviourScript.SPEED_MULTIPLIER * 0.75f; //grabs the speed of player and multiplies it by a factor.
+        ActorSpeed = PlayerBehaviourScript.SPEED_MULTIPLIER * speedMultiplier; //grabs the speed of player and multiplies it by a factor.
     }
 
     // Update is called once per frame
@@ -54,7 +55,7 @@ public class BasicNPCBehaviourScript : MonoBehaviour
         {
             
             //run in the last known run direction
-            body.velocity = runDirection * speedMultiplier;
+            body.velocity = runDirection * ActorSpeed;
         }
     }
 
