@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -7,12 +8,16 @@ public class PlayerBehaviourScript : MonoBehaviour
 {
     public const float SPEED_MULTIPLIER = 5.0f;
     public Camera Camera;
+    public TextMeshProUGUI scoreText;
 
     private Rigidbody body;
-    private Ray ray;
-    private RaycastHit hitPos;
-    private Vector3 LookAtPosition = Vector3.zero;
-    private bool hit;
+    private int score = 0;
+    
+    //private Ray ray;
+    //private RaycastHit hitPos;
+    //private Vector3 LookAtPosition = Vector3.zero;
+    //private bool hit;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -23,10 +28,7 @@ public class PlayerBehaviourScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            Debug.Log(":3");
-        }
+        scoreText.text = score.ToString();
     }
 
     private void FixedUpdate()
@@ -50,8 +52,22 @@ public class PlayerBehaviourScript : MonoBehaviour
 
             //LookAtPosition = new Vector3(hitPos.point.x, transform.position.y, hitPos.point.z);
             //transform.LookAt(LookAtPosition);
+
+            //if (Input.GetMouseButtonDown(0))
+            //{
+            //    Debug.Log("Trans Rights!");
+            //}
         }
        
         
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Target")
+        {
+            score += collision.gameObject.GetComponent<BasicNPCBehaviourScript>().GetValue();
+            Destroy(collision.gameObject);
+        }
     }
 }

@@ -6,6 +6,7 @@ public class BasicNPCBehaviourScript : MonoBehaviour
 {
     public Rigidbody player;
     public float speedMultiplier = 0.75f;
+    
 
     private Rigidbody body;
     private Vector3 runDirection;        //direction which the NPC runs away in.
@@ -14,7 +15,7 @@ public class BasicNPCBehaviourScript : MonoBehaviour
     private bool playerSeen = false;     //has the NPC seen the player?
     private bool playerInRange = false;  //is the player inside of the visibility collider?
     private bool caught = false;         //was the NPC caught by the player?
-
+    private int pointsWorth;             //Points that the NPC is worth when caught, calculated in the Start.
 
     IEnumerator RunningInFear()
     {
@@ -27,12 +28,22 @@ public class BasicNPCBehaviourScript : MonoBehaviour
         
     }
 
+    public int GetValue()
+    {
+        return pointsWorth;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         body = GetComponent<Rigidbody>();
         ActorSpeed = PlayerBehaviourScript.SPEED_MULTIPLIER * speedMultiplier; //grabs the speed of player and multiplies it by a factor.
+
+        //calculate how much this NPC is worth in points.
+        // x = 10 + 10 * s
+        // s = speed factor relative to the player
+        // if s == 1.0f, the NPC will be worth 20 points.
+        pointsWorth = 10 + Mathf.RoundToInt(10*speedMultiplier); 
     }
 
     // Update is called once per frame
