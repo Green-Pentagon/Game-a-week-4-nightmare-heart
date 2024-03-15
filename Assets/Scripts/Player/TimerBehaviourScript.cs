@@ -9,6 +9,7 @@ public class TimerBehaviourScript : MonoBehaviour
     public TextMeshProUGUI timerReadout;
 
     private PlayerBehaviourScript Player;
+    private Color defaultColour = Color.white;
     private float TimeRemaining;
 
     public float GetRemainingTime()
@@ -32,8 +33,18 @@ public class TimerBehaviourScript : MonoBehaviour
     {
         if (TimeRemaining > 0)
         {
+            if (TimeRemaining < 10.0f)
+            {
+                timerReadout.color = Color.red;
+            }
+            else
+            {
+                timerReadout.color = defaultColour;
+            }
+
             TimeRemaining -= Time.fixedDeltaTime;
             timerReadout.text = (Mathf.Round(TimeRemaining*100)/100).ToString();
+            
         }
         else
         {
