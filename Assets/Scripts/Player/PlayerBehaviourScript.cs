@@ -17,7 +17,7 @@ public class PlayerBehaviourScript : MonoBehaviour
     private bool alive = true;
 
     //ground check
-    private float floatingOffGroundOffset = 0.7f; //CHANGE ME IF YOU WISH THE PLAYER TO FLOAT FURTHER OR CLOSER TO GROUND
+    private float floatingOffGroundOffset = 1.0f; //CHANGE ME IF YOU WISH THE PLAYER TO FLOAT FURTHER OR CLOSER TO GROUND
 
     //Looking around where cursor is
     private Ray cameraToCursorRay;
@@ -29,7 +29,7 @@ public class PlayerBehaviourScript : MonoBehaviour
     //jumping
     private float jumpMultiplier = 75.0f;
     private Vector3 jumpForce;
-    private bool jumping = false;
+    private bool midAir = false;
     private bool gliding = false;
 
 
@@ -64,27 +64,29 @@ public class PlayerBehaviourScript : MonoBehaviour
         }
     }
 
-    void DisableContraintsForJump(bool toggle)
+    void FallingContraints(bool toggle)
     {
         if (toggle)
         {
             body.constraints = RigidbodyConstraints.None;//unfreezes y motion
             body.constraints = RigidbodyConstraints.FreezeRotation;
         }
-        else
+        else //if hit ground
         {
-            body.constraints = RigidbodyConstraints.FreezePositionY;
+            body.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+            
         }
     }
 
     IEnumerator Jump()
     {
         ToggleGlide(false);
-        DisableContraintsForJump(true);
+        FallingContraints(true);
 
         body.AddForce(jumpForce,ForceMode.Force);
-        yield return new WaitForSeconds(0.2f);
-        jumping = true;
+        yield return null; 
+        //yield return new WaitForSeconds(0.2f); 
+        //midAir = true;
 
     }
 
@@ -103,7 +105,7 @@ public class PlayerBehaviourScript : MonoBehaviour
     {
         scoreText.text = score.ToString();
 
-        if(Input.GetMouseButton(0) && jumping)
+        if(Input.GetMouseButton(0) && midAir)
         {
             gliding = !gliding;
             ToggleGlide(gliding);
@@ -116,19 +118,28 @@ public class PlayerBehaviourScript : MonoBehaviour
             CameraBehaviour.SnapToPlayer(!CameraBehaviour.IsSnappingToPlayer());
             CameraBehaviour.SetLocation(cameraToCursorHitPos.point);
         }
-        else if (Input.GetKeyDown(KeyCode.Space) && !jumping)
+        else if (Input.GetKeyDown(KeyCode.Space) && !midAir)
         {
-            
             StartCoroutine(Jump());
         }
 
-        if (jumping)
+        //body constraint and drag toggles
+        if (midAir)//if player is mid-air
         {
-            if (IsGrounded())
+            if (IsGrounded())//check if they landed yet
             {
-                jumping = false;
-                DisableContraintsForJump(false);
+                FallingContraints(false);
                 ToggleGlide(true);
+                midAir = false;
+            }
+        }
+        else//if player is on ground
+        {
+            if (!IsGrounded())//if player has no ground underneath them
+            {
+                FallingContraints(true);
+                ToggleGlide(false);
+                midAir = true;
             }
         }
 
@@ -138,6 +149,8 @@ public class PlayerBehaviourScript : MonoBehaviour
     {
         if (alive)
         {
+
+
             float horizInput = Input.GetAxis("Horizontal"); // -1, 0, or 1 depending on user input
             float vertInput = Input.GetAxis("Vertical"); // -1, 0, or 1 depending on user input
 
