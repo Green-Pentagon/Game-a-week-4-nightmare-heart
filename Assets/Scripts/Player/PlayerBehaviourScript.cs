@@ -77,13 +77,14 @@ public class PlayerBehaviourScript : MonoBehaviour
     {
         if (toggle)
         {
-            body.constraints = RigidbodyConstraints.None;//unfreezes y motion
-            body.constraints = RigidbodyConstraints.FreezeRotation;
+            
+            body.constraints = RigidbodyConstraints.None;
         }
         else //if hit ground
         {
-            body.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
-            
+            body.constraints = RigidbodyConstraints.FreezeRotation; //RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+
+
         }
     }
 
@@ -185,7 +186,7 @@ public class PlayerBehaviourScript : MonoBehaviour
                 body.velocity = new Vector3(horizInput * SPEED_MULTIPLIER, body.velocity.y, vertInput * SPEED_MULTIPLIER);
 
                 //transform look in direction of velocity
-                transform.LookAt(transform.position + Vector3.Normalize(body.velocity));
+                transform.LookAt(transform.position + Vector3.Normalize(new Vector3(body.velocity.x,0.0f,body.velocity.z)));
             }
             else
             {
