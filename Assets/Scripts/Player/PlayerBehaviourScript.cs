@@ -16,11 +16,20 @@ public class PlayerBehaviourScript : MonoBehaviour
     private int score = 0;
     private bool alive = true;
 
-    private Ray ray;
-    private RaycastHit hitPos;
+    //ground check
+    private float floatingOffGroundOffset = 0.7f; //CHANGE ME IF YOU WISH THE PLAYER TO FLOAT FURTHER OR CLOSER TO GROUND
+
+    //Looking around where cursor is
+    private Ray cameraToCursorRay;
+    private RaycastHit cameraToCursorHitPos;
     private Vector3 LookAtPosition = Vector3.zero;
-    private bool hit;
+    private bool cameraToCursorHit;
     private bool offsetCamera = false;
+
+    //jumping
+    private float jumpMultiplier = 500.0f;
+    private Vector3 jumpForce;
+    private bool jumping = false;
 
 
     // Start is called before the first frame update
@@ -35,11 +44,41 @@ public class PlayerBehaviourScript : MonoBehaviour
         return alive;
     }
 
+    bool IsGrounded()
+    {
+        return Physics.Raycast(transform.position, Vector3.down, floatingOffGroundOffset, 1 << LayerMask.NameToLayer("Ground"));
+    }
+
+    void DisableContraintsForJump(bool toggle)
+    {
+        if (toggle)
+        {
+            body.constraints = RigidbodyConstraints.None;//unfreezes y motion
+            body.constraints = RigidbodyConstraints.FreezeRotation;
+        }
+        else
+        {
+            body.constraints = RigidbodyConstraints.FreezePositionY;
+        }
+    }
+
+    IEnumerator Jump()
+    {
+        DisableContraintsForJump(true);
+        body.AddForce(jumpForce,ForceMode.Force);
+        yield return new WaitForSeconds(0.2f);
+        jumping = true;
+
+    }
+
+
     void Start()
     {
         body = GetComponent<Rigidbody>();
         timer = GetComponent<TimerBehaviourScript>();
         CameraBehaviour = Camera.GetComponent<CameraBehaviourScript>();
+
+        jumpForce = -Physics.gravity * body.mass * jumpMultiplier;
     }
 
     // Update is called once per frame
@@ -52,8 +91,23 @@ public class PlayerBehaviourScript : MonoBehaviour
             //Debug.Log("Trans Rights!");
             offsetCamera = true;
             CameraBehaviour.SnapToPlayer(!CameraBehaviour.IsSnappingToPlayer());
-            CameraBehaviour.SetLocation(hitPos.point);
+            CameraBehaviour.SetLocation(cameraToCursorHitPos.point);
         }
+        else if (Input.GetKeyDown(KeyCode.Space) && !jumping)
+        {
+            
+            StartCoroutine(Jump());
+        }
+
+        if (jumping)
+        {
+            if (IsGrounded())
+            {
+                jumping = false;
+                DisableContraintsForJump(false);
+            }
+        }
+
     }
 
     private void FixedUpdate()
@@ -76,14 +130,14 @@ public class PlayerBehaviourScript : MonoBehaviour
             else
             {
                 //looking around
-                ray = Camera.ScreenPointToRay(Input.mousePosition);
-                hit = Physics.Raycast(ray, out hitPos, 50.0f, 1 << LayerMask.NameToLayer("Ground"));
-                if (!hit)
+                cameraToCursorRay = Camera.ScreenPointToRay(Input.mousePosition);
+                cameraToCursorHit = Physics.Raycast(cameraToCursorRay, out cameraToCursorHitPos, 50.0f, 1 << LayerMask.NameToLayer("Ground"));
+                if (!cameraToCursorHit)
                 {
-                    hitPos.point = transform.position;
+                    cameraToCursorHitPos.point = transform.position;
                 }
 
-                LookAtPosition = new Vector3(hitPos.point.x, transform.position.y, hitPos.point.z);
+                LookAtPosition = new Vector3(cameraToCursorHitPos.point.x, transform.position.y, cameraToCursorHitPos.point.z);
                 transform.LookAt(LookAtPosition);
 
                 ////accidentally madea  buggy free-roaming camera, not useful for this project but keeping it in if it may come in useful for any future re-working.
