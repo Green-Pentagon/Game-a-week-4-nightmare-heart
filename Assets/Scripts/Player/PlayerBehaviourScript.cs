@@ -48,7 +48,7 @@ public class PlayerBehaviourScript : MonoBehaviour
     private bool glideInputTriggered = false;
 
 
-    public void Kill()
+    public void Kill()//kills player
     {
         alive = false;
     }
@@ -58,13 +58,13 @@ public class PlayerBehaviourScript : MonoBehaviour
         return alive;
     }
 
-    bool IsGrounded()
+    bool IsGrounded()//returns result of a raycast pointing down and adjustable length.
     {
         return Physics.Raycast(transform.position, Vector3.down, floatingOffGroundOffset, 1 << LayerMask.NameToLayer("Ground"));
     }
 
 
-    void ToggleGlide(bool toggle)
+    void ToggleGlide(bool toggle)//adjusts the rigid body's drag to allow regular falling, or a slowed fall for gliding.
     {
         if (toggle)
         {
@@ -76,7 +76,7 @@ public class PlayerBehaviourScript : MonoBehaviour
         }
     }
 
-    void FallingContraints(bool toggle)
+    void FallingContraints(bool toggle)//frees rotation during fall, used to also lock y-axis but that was a bandaid solution which was patched out.
     {
         if (toggle)
         {
@@ -91,7 +91,7 @@ public class PlayerBehaviourScript : MonoBehaviour
         }
     }
 
-    IEnumerator Jump()
+    IEnumerator Jump()//prepares body for and adds force of the jump.
     {
         ToggleGlide(false);
         FallingContraints(true);
@@ -117,6 +117,7 @@ public class PlayerBehaviourScript : MonoBehaviour
     {
         scoreText.text = score.ToString();
         
+        //Glide ability
         if (Input.GetKeyDown(KeyCode.Mouse0) && midAir && !glideInputTriggered)
         {
             //Bug: toggles on and off rapidly!
@@ -140,6 +141,7 @@ public class PlayerBehaviourScript : MonoBehaviour
             glideInputTriggered = false;
         }
 
+        //Camera to mouse position ability
         if (Input.GetMouseButtonDown(1) && alive)
         {
             //Debug.Log("Trans Rights!");
@@ -180,8 +182,6 @@ public class PlayerBehaviourScript : MonoBehaviour
     {
         if (alive)
         {
-
-
             float horizInput = Input.GetAxis("Horizontal"); // -1, 0, or 1 depending on user input
             float vertInput = Input.GetAxis("Vertical"); // -1, 0, or 1 depending on user input
 
@@ -215,7 +215,7 @@ public class PlayerBehaviourScript : MonoBehaviour
                 //}
             }
         }
-        else
+        else//if dead
         {
             CameraBehaviour.SnapToPlayer(true);
         }
@@ -224,6 +224,7 @@ public class PlayerBehaviourScript : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        //nom nom
         if (collision.gameObject.tag == "Target")
         {
             int value = collision.gameObject.GetComponent<BasicNPCBehaviourScript>().GetValue();
