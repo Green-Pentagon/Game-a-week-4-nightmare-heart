@@ -12,14 +12,16 @@ public class PlayerBehaviourScript : MonoBehaviour
 
     private Rigidbody body;
     private TimerBehaviourScript timer;
+    private CameraBehaviourScript CameraBehaviour;
     private int score = 0;
     private bool alive = true;
-    
-    //private Ray ray;
-    //private RaycastHit hitPos;
-    //private Vector3 LookAtPosition = Vector3.zero;
-    //private bool hit;
-    
+
+    private Ray ray;
+    private RaycastHit hitPos;
+    private Vector3 LookAtPosition = Vector3.zero;
+    private bool hit;
+    private bool offsetCamera = false;
+
 
     // Start is called before the first frame update
 
@@ -37,12 +39,21 @@ public class PlayerBehaviourScript : MonoBehaviour
     {
         body = GetComponent<Rigidbody>();
         timer = GetComponent<TimerBehaviourScript>();
+        CameraBehaviour = Camera.GetComponent<CameraBehaviourScript>();
     }
 
     // Update is called once per frame
     void Update()
     {
         scoreText.text = score.ToString();
+
+        if (Input.GetMouseButtonDown(0) && alive)
+        {
+            //Debug.Log("Trans Rights!");
+            offsetCamera = true;
+            CameraBehaviour.SnapToPlayer(!CameraBehaviour.IsSnappingToPlayer());
+            CameraBehaviour.SetLocation(hitPos.point);
+        }
     }
 
     private void FixedUpdate()
@@ -54,6 +65,8 @@ public class PlayerBehaviourScript : MonoBehaviour
 
             if (horizInput != 0 || vertInput != 0)
             {
+                CameraBehaviour.SnapToPlayer(true);
+
                 //set velocity
                 body.velocity = new Vector3(horizInput * SPEED_MULTIPLIER, body.velocity.y, vertInput * SPEED_MULTIPLIER);
 
@@ -62,18 +75,27 @@ public class PlayerBehaviourScript : MonoBehaviour
             }
             else
             {
-                ////looking around
-                //ray = Camera.ScreenPointToRay(Input.mousePosition);
-                //hit = Physics.Raycast(ray, out hitPos, 50.0f, 1 << LayerMask.NameToLayer("Ground"));
+                //looking around
+                ray = Camera.ScreenPointToRay(Input.mousePosition);
+                hit = Physics.Raycast(ray, out hitPos, 50.0f, 1 << LayerMask.NameToLayer("Ground"));
+                if (!hit)
+                {
+                    hitPos.point = transform.position;
+                }
 
-                //LookAtPosition = new Vector3(hitPos.point.x, transform.position.y, hitPos.point.z);
-                //transform.LookAt(LookAtPosition);
+                LookAtPosition = new Vector3(hitPos.point.x, transform.position.y, hitPos.point.z);
+                transform.LookAt(LookAtPosition);
 
-                //if (Input.GetMouseButtonDown(0))
+                ////accidentally madea  buggy free-roaming camera, not useful for this project but keeping it in if it may come in useful for any future re-working.
+                //if (!CameraBehaviour.IsSnappingToPlayer())
                 //{
-                //    Debug.Log("Trans Rights!");
+                //    CameraBehaviour.SetLocation(hitPos.point);
                 //}
             }
+        }
+        else
+        {
+            CameraBehaviour.SnapToPlayer(true);
         }
         
     }
