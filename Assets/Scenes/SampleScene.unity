@@ -10507,8 +10507,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71e46f98976fadb419ccc925b8043aa3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Camera: {fileID: 963194227}
+  StateGround: {fileID: 2100000, guid: 5fd92eba2a941e3488fec75d48f5d707, type: 2}
+  StateAir: {fileID: 2100000, guid: adbd0a4c5cd845e448a7a1170705ce10, type: 2}
+  StateGlide: {fileID: 2100000, guid: 0501eedfcbb59724a98f16bb315f22f5, type: 2}
   scoreText: {fileID: 1714005099}
+  Camera: {fileID: 963194227}
 --- !u!114 &1358281457
 MonoBehaviour:
   m_ObjectHideFlags: 0

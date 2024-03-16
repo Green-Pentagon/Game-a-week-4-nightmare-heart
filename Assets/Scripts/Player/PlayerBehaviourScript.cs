@@ -6,20 +6,32 @@ using UnityEngine;
 
 public class PlayerBehaviourScript : MonoBehaviour
 {
+    //Constants
     public const float SPEED_MULTIPLIER = 5.0f;
-    public Camera Camera;
-    public TextMeshProUGUI scoreText;
+    
+    //debug feedback
+    public Material StateGround;
+    public Material StateAir;
+    //public Material StateGlide;
+    private MeshRenderer meshRenderer;
 
-    private Rigidbody body;
+    //Timer mechanic
+    public TextMeshProUGUI scoreText;
     private TimerBehaviourScript timer;
-    private CameraBehaviourScript CameraBehaviour;
     private int score = 0;
     private bool alive = true;
+
+    //Physics
+    private Rigidbody body;
 
     //ground check
     private float floatingOffGroundOffset = 1.0f; //CHANGE ME IF YOU WISH THE PLAYER TO FLOAT FURTHER OR CLOSER TO GROUND
 
-    //Looking around where cursor is
+    //Camera
+    public Camera Camera;
+    private CameraBehaviourScript CameraBehaviour;
+
+    //Looking around & Camera offset ability
     private Ray cameraToCursorRay;
     private RaycastHit cameraToCursorHitPos;
     private Vector3 LookAtPosition = Vector3.zero;
@@ -32,9 +44,6 @@ public class PlayerBehaviourScript : MonoBehaviour
     private bool midAir = false;
     private bool gliding = false;
 
-
-
-    // Start is called before the first frame update
 
     public void Kill()
     {
@@ -90,12 +99,13 @@ public class PlayerBehaviourScript : MonoBehaviour
 
     }
 
-
+    // Start is called before the first frame update
     void Start()
     {
         body = GetComponent<Rigidbody>();
         timer = GetComponent<TimerBehaviourScript>();
         CameraBehaviour = Camera.GetComponent<CameraBehaviourScript>();
+        meshRenderer = GetComponent<MeshRenderer>();
 
         jumpForce = -Physics.gravity * body.mass * jumpMultiplier;
     }
@@ -105,13 +115,24 @@ public class PlayerBehaviourScript : MonoBehaviour
     {
         scoreText.text = score.ToString();
 
-        if(Input.GetMouseButton(0) && midAir)
-        {
-            gliding = !gliding;
-            ToggleGlide(gliding);
-        }
+        //if(Input.GetMouseButton(0) && midAir)
+        //{
+        //    //Bug: toggles on and off rapidly!
+        //    gliding = !gliding;
+        //    ToggleGlide(gliding);
+            
+        //    //Debug!
+        //    if (gliding)
+        //    {
+        //        meshRenderer.material = StateGlide;
+        //    }
+        //    else
+        //    {
+        //        meshRenderer.material = StateAir;
+        //    }
+        //}
 
-        if (Input.GetMouseButtonDown(1) && alive)
+        if (Input.GetMouseButtonDown(0) && alive)
         {
             //Debug.Log("Trans Rights!");
             offsetCamera = true;
@@ -131,6 +152,7 @@ public class PlayerBehaviourScript : MonoBehaviour
                 FallingContraints(false);
                 ToggleGlide(true);
                 midAir = false;
+                meshRenderer.material = StateGround;
             }
         }
         else//if player is on ground
@@ -140,6 +162,7 @@ public class PlayerBehaviourScript : MonoBehaviour
                 FallingContraints(true);
                 ToggleGlide(false);
                 midAir = true;
+                meshRenderer.material = StateAir;
             }
         }
 
