@@ -12,7 +12,7 @@ public class PlayerBehaviourScript : MonoBehaviour
     //debug feedback
     public Material StateGround;
     public Material StateAir;
-    //public Material StateGlide;
+    public Material StateGlide;
     private MeshRenderer meshRenderer;
 
     //Timer mechanic
@@ -43,6 +43,9 @@ public class PlayerBehaviourScript : MonoBehaviour
     private Vector3 jumpForce;
     private bool midAir = false;
     private bool gliding = false;
+
+    //gliding
+    private bool glideInputTriggered = false;
 
 
     public void Kill()
@@ -82,7 +85,7 @@ public class PlayerBehaviourScript : MonoBehaviour
         }
         else //if hit ground
         {
-            body.constraints = RigidbodyConstraints.FreezeRotation; //RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+            body.constraints = RigidbodyConstraints.FreezeRotation;
 
 
         }
@@ -95,8 +98,6 @@ public class PlayerBehaviourScript : MonoBehaviour
 
         body.AddForce(jumpForce,ForceMode.Force);
         yield return null; 
-        //yield return new WaitForSeconds(0.2f); 
-        //midAir = true;
 
     }
 
@@ -115,25 +116,31 @@ public class PlayerBehaviourScript : MonoBehaviour
     void Update()
     {
         scoreText.text = score.ToString();
-
-        //if(Input.GetMouseButton(0) && midAir)
-        //{
-        //    //Bug: toggles on and off rapidly!
-        //    gliding = !gliding;
-        //    ToggleGlide(gliding);
+        
+        if (Input.GetKeyDown(KeyCode.Mouse0) && midAir && !glideInputTriggered)
+        {
+            //Bug: toggles on and off rapidly!
             
-        //    //Debug!
-        //    if (gliding)
-        //    {
-        //        meshRenderer.material = StateGlide;
-        //    }
-        //    else
-        //    {
-        //        meshRenderer.material = StateAir;
-        //    }
-        //}
+            gliding = !gliding;
+            ToggleGlide(gliding);
+            glideInputTriggered = true;
 
-        if (Input.GetMouseButtonDown(0) && alive)
+            //Debug!
+            if (gliding)
+            {
+                meshRenderer.material = StateGlide;
+            }
+            else
+            {
+                meshRenderer.material = StateAir;
+            }
+        }
+        else if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            glideInputTriggered = false;
+        }
+
+        if (Input.GetMouseButtonDown(1) && alive)
         {
             //Debug.Log("Trans Rights!");
             offsetCamera = true;
