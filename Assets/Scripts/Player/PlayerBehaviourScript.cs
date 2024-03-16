@@ -25,7 +25,7 @@ public class PlayerBehaviourScript : MonoBehaviour
     private Rigidbody body;
 
     //ground check
-    private float floatingOffGroundOffset = 1.0f; //CHANGE ME IF YOU WISH THE PLAYER TO FLOAT FURTHER OR CLOSER TO GROUND
+    private float floatingOffGroundOffset = 0.75f; //CHANGE ME IF YOU WISH THE PLAYER TO FLOAT FURTHER OR CLOSER TO GROUND
 
     //Camera
     public Camera Camera;
