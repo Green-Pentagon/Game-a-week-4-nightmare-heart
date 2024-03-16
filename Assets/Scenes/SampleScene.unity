@@ -2335,6 +2335,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 64556502918472682, guid: f48ca42bbf7370343a33a9e87b1d9fdb, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2705,7 +2709,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &353528375
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3866,6 +3870,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1358281455}
   speedMultiplier: 1
+  canFly: 1
 --- !u!135 &559346445
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -6917,6 +6922,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1358281455}
   speedMultiplier: 0.75
+  canFly: 0
 --- !u!1 &1007140417
 GameObject:
   m_ObjectHideFlags: 0
@@ -8920,6 +8926,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1358281455}
   speedMultiplier: 1.5
+  canFly: 0
 --- !u!135 &1277766051
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -9545,7 +9552,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54c884e4b98d7854089a61769c6edfa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startTimer: 10
   timerReadout: {fileID: 1588563294}
 --- !u!1001 &1371628146
 PrefabInstance:

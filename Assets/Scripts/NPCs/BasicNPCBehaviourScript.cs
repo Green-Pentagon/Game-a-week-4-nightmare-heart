@@ -6,7 +6,7 @@ public class BasicNPCBehaviourScript : MonoBehaviour
 {
     public Rigidbody player;
     public float speedMultiplier = 0.75f;
-    
+    public bool canFly = false;
 
     private Rigidbody body;
     private Vector3 runDirection;        //direction which the NPC runs away in.
@@ -66,6 +66,12 @@ public class BasicNPCBehaviourScript : MonoBehaviour
         {
             
             //run in the last known run direction
+            //bug: causes characters to float mid-air until they stop running
+            if (!canFly)
+            {
+                runDirection = new Vector3(runDirection.x, 0.0f, runDirection.z);
+            }
+
             body.velocity = runDirection * ActorSpeed;
         }
     }

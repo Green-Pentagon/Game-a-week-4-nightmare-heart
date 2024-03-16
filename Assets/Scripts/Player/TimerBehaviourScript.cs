@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class TimerBehaviourScript : MonoBehaviour
 {
-    [HideInInspector] public float startTimer = 10.0f;
+    
     public TextMeshProUGUI timerReadout;
 
     private PlayerBehaviourScript Player;
     private Color defaultColour = Color.white;
+    private float startTimer = 999.0f;
     private float TimeRemaining;
 
     public float GetRemainingTime()

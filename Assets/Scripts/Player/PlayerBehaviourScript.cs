@@ -27,9 +27,11 @@ public class PlayerBehaviourScript : MonoBehaviour
     private bool offsetCamera = false;
 
     //jumping
-    private float jumpMultiplier = 500.0f;
+    private float jumpMultiplier = 75.0f;
     private Vector3 jumpForce;
     private bool jumping = false;
+    private bool gliding = false;
+
 
 
     // Start is called before the first frame update
@@ -49,6 +51,19 @@ public class PlayerBehaviourScript : MonoBehaviour
         return Physics.Raycast(transform.position, Vector3.down, floatingOffGroundOffset, 1 << LayerMask.NameToLayer("Ground"));
     }
 
+
+    void ToggleGlide(bool toggle)
+    {
+        if (toggle)
+        {
+            body.drag = 5.0f;
+        }
+        else
+        {
+            body.drag = 0.05f;
+        }
+    }
+
     void DisableContraintsForJump(bool toggle)
     {
         if (toggle)
@@ -64,7 +79,9 @@ public class PlayerBehaviourScript : MonoBehaviour
 
     IEnumerator Jump()
     {
+        ToggleGlide(false);
         DisableContraintsForJump(true);
+
         body.AddForce(jumpForce,ForceMode.Force);
         yield return new WaitForSeconds(0.2f);
         jumping = true;
@@ -86,7 +103,13 @@ public class PlayerBehaviourScript : MonoBehaviour
     {
         scoreText.text = score.ToString();
 
-        if (Input.GetMouseButtonDown(0) && alive)
+        if(Input.GetMouseButton(0) && jumping)
+        {
+            gliding = !gliding;
+            ToggleGlide(gliding);
+        }
+
+        if (Input.GetMouseButtonDown(1) && alive)
         {
             //Debug.Log("Trans Rights!");
             offsetCamera = true;
@@ -105,6 +128,7 @@ public class PlayerBehaviourScript : MonoBehaviour
             {
                 jumping = false;
                 DisableContraintsForJump(false);
+                ToggleGlide(true);
             }
         }
 
