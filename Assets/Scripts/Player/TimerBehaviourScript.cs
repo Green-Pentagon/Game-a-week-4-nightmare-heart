@@ -13,6 +13,7 @@ public class TimerBehaviourScript : MonoBehaviour
     private float startTimer = 30.0f;
     private float TimeRemaining;
 
+
     public float GetRemainingTime()
     {
         return TimeRemaining;
@@ -28,11 +29,12 @@ public class TimerBehaviourScript : MonoBehaviour
     {
         Player = GetComponent<PlayerBehaviourScript>();
         TimeRemaining = startTimer;
+
     }
 
     private void FixedUpdate()
     {
-        if (TimeRemaining > 0)
+        if (TimeRemaining > 0 && !Player.HasWon())
         {
             if (TimeRemaining < 10.0f)
             {
@@ -47,10 +49,14 @@ public class TimerBehaviourScript : MonoBehaviour
             timerReadout.text = (Mathf.Round(TimeRemaining*100)/100).ToString();
             
         }
-        else
+        else if (TimeRemaining <= 0)
         {
             TimeRemaining = 0.00f;
             Player.Kill();
+        }
+        else
+        {
+            timerReadout.enabled = false;
         }
     }
 }

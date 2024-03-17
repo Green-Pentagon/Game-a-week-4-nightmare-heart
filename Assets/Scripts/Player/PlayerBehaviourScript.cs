@@ -8,7 +8,12 @@ public class PlayerBehaviourScript : MonoBehaviour
 {
     //Constants
     public const float SPEED_MULTIPLIER = 5.0f;
-    
+
+    //win condition stuff
+    private int TargetsTotal;
+    private int TargetsCaught;
+    private bool win = false;
+
     //debug feedback
     public Material StateGround;
     public Material StateAir;
@@ -56,6 +61,11 @@ public class PlayerBehaviourScript : MonoBehaviour
     public bool IsAlive()
     {
         return alive;
+    }
+
+    public bool HasWon()
+    {
+        return win;
     }
 
     bool IsGrounded()//returns result of a raycast pointing down and adjustable length.
@@ -110,11 +120,18 @@ public class PlayerBehaviourScript : MonoBehaviour
         meshRenderer = GetComponent<MeshRenderer>();
 
         jumpForce = -Physics.gravity * body.mass * jumpMultiplier;
+        TargetsTotal = GameObject.FindGameObjectsWithTag("Target").Length;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (TargetsCaught == TargetsTotal)
+        {
+            win = true;
+        }
+
+
         scoreText.text = score.ToString();
         
         //Glide ability
@@ -229,6 +246,7 @@ public class PlayerBehaviourScript : MonoBehaviour
         {
             int value = collision.gameObject.GetComponent<BasicNPCBehaviourScript>().GetValue();
             score += value;
+            TargetsCaught++;
             timer.AppendTime(value/3);
             value = -1;
             Destroy(collision.gameObject);
