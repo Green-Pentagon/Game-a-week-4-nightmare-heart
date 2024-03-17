@@ -10,6 +10,8 @@ public class PlayerBehaviourScript : MonoBehaviour
     public const float SPEED_MULTIPLIER = 5.0f;
 
     //win condition stuff
+    public TextMeshProUGUI TargetsTotalReadout;
+    public TextMeshProUGUI TargetsCaughtReadout;
     private int TargetsTotal;
     private int TargetsCaught;
     private bool win = false;
@@ -126,6 +128,9 @@ public class PlayerBehaviourScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        TargetsCaughtReadout.text = TargetsCaught.ToString();
+        TargetsTotalReadout.text = TargetsTotal.ToString();
+
         if (TargetsCaught == TargetsTotal)
         {
             win = true;
