@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class BasicNPCBehaviourScript : MonoBehaviour
 {
-    public Rigidbody player;
     public float speedMultiplier = 0.75f;
     public bool canFly = false;
 
@@ -17,6 +16,7 @@ public class BasicNPCBehaviourScript : MonoBehaviour
     private bool caught = false;         //was the NPC caught by the player?
     private int pointsWorth;             //Points that the NPC is worth when caught, calculated in the Start.
 
+    private Vector3 playerPos;
     IEnumerator RunningInFear()
     {
         yield return new WaitForSeconds(fearRunningTime);
@@ -56,10 +56,10 @@ public class BasicNPCBehaviourScript : MonoBehaviour
     {
         if (playerInRange && !caught)
         {
-            //update running direction & rotation of transform
-            runDirection = Vector3.Normalize(body.position - player.position);
-            transform.LookAt(new Vector3(player.position.x,transform.position.y,player.position.z)); //look at player, ignoring Z position.
-            transform.Rotate(new Vector3(0.0f, 180.0f, 0.0f)); //face away from player
+            runDirection = Vector3.Normalize(transform.position - playerPos);
+
+            //transform.LookAt(new Vector3(player.position.x,transform.position.y,player.position.z)); //look at player, ignoring Z position.
+            //transform.Rotate(new Vector3(0.0f, 180.0f, 0.0f)); //face away from player
         }
 
         if ((playerSeen) && !caught)
@@ -73,6 +73,7 @@ public class BasicNPCBehaviourScript : MonoBehaviour
             }
 
             body.velocity = runDirection * ActorSpeed;
+            
         }
     }
 
@@ -88,6 +89,7 @@ public class BasicNPCBehaviourScript : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
+            playerPos = other.transform.position;
             playerSeen = true;
             playerInRange = true;
         }
