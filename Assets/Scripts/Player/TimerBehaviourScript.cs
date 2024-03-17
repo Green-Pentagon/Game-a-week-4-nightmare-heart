@@ -10,7 +10,7 @@ public class TimerBehaviourScript : MonoBehaviour
 
     private PlayerBehaviourScript Player;
     private Color defaultColour = Color.white;
-    private float startTimer = 999.0f;
+    private float startTimer = 30.0f;
     private float TimeRemaining;
 
     public float GetRemainingTime()

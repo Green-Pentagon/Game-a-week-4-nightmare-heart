@@ -229,7 +229,7 @@ public class PlayerBehaviourScript : MonoBehaviour
         {
             int value = collision.gameObject.GetComponent<BasicNPCBehaviourScript>().GetValue();
             score += value;
-            timer.AppendTime(value);
+            timer.AppendTime(value/3);
             value = -1;
             Destroy(collision.gameObject);
         }
