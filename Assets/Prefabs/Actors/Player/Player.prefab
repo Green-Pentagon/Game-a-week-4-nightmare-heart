@@ -37,7 +37,7 @@ Transform:
   m_Children:
   - {fileID: 7583778137946002469}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8334724993623261094
 MeshFilter:
@@ -151,6 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TargetsTotalReadout: {fileID: 0}
   TargetsCaughtReadout: {fileID: 0}
+  ParticleSpawner: {fileID: 5163699238064006546, guid: e52108cba1b35a148909f8d70a6b96c9, type: 3}
   scoreText: {fileID: 0}
   Camera: {fileID: 0}
 --- !u!114 &934737824847734766

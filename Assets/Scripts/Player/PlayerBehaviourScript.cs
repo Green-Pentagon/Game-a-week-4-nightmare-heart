@@ -20,6 +20,9 @@ public class PlayerBehaviourScript : MonoBehaviour
     private Animator animator;
     //Grounded, MidAir, Gliding, Dead
 
+    //ParticleSpawner
+    public GameObject ParticleSpawner;
+
     //Timer mechanic
     public TextMeshProUGUI scoreText;
     private TimerBehaviourScript timer;
@@ -267,7 +270,10 @@ public class PlayerBehaviourScript : MonoBehaviour
             TargetsCaught++;
             timer.AppendTime(value/3);
             value = -1;
+            Instantiate(ParticleSpawner, collision.transform.position,collision.transform.rotation);
+
             Destroy(collision.gameObject);
+            
         }
     }
 }
