@@ -270,7 +270,7 @@ public class PlayerBehaviourScript : MonoBehaviour
             TargetsCaught++;
             timer.AppendTime(value/3);
             value = -1;
-            Instantiate(ParticleSpawner, collision.transform.position,collision.transform.rotation);
+            Instantiate(ParticleSpawner, new Vector3(collision.transform.position.x,collision.transform.position.y - collision.transform.localScale.y / 2, collision.transform.position.z ),collision.transform.rotation);
 
             Destroy(collision.gameObject);
             
