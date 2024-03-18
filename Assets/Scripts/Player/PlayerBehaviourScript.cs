@@ -152,7 +152,7 @@ public class PlayerBehaviourScript : MonoBehaviour
             gliding = !gliding;
             ToggleGlide(gliding);
             glideInputTriggered = true;
-            animator.SetBool("Gliding", true);
+            animator.SetBool("Gliding", gliding);
             //Debug!
             //if (gliding)
             //{
@@ -190,11 +190,13 @@ public class PlayerBehaviourScript : MonoBehaviour
                 FallingContraints(false);
                 ToggleGlide(true);
                 midAir = false;
+                animator.SetBool("Gliding", false);
                 //meshRenderer.material = StateGround;
             }
         }
         else//if player is on ground
         {
+            
             if (!IsGrounded())//if player has no ground underneath them
             {
                 FallingContraints(true);
@@ -203,8 +205,8 @@ public class PlayerBehaviourScript : MonoBehaviour
                 //meshRenderer.material = StateAir;
             }
         }
-
         animator.SetBool("MidAir", midAir);
+        
     }
 
     private void FixedUpdate()
@@ -226,7 +228,7 @@ public class PlayerBehaviourScript : MonoBehaviour
 
                 animator.SetBool("Moving", true);
             }
-            else
+            else if (!midAir)
             {
                 //looking around
                 cameraToCursorRay = Camera.ScreenPointToRay(Input.mousePosition);
