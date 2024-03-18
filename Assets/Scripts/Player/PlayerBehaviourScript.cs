@@ -9,6 +9,10 @@ public class PlayerBehaviourScript : MonoBehaviour
     //Constants
     public const float SPEED_MULTIPLIER = 5.0f;
 
+    //love velocity increase
+    private float loveVelocityMultiplier = 1.0f;
+    private float loveVelocityIncrease = 0.04f; //how much the multiplier increases by per NPC collided with
+
     //win condition stuff
     public TextMeshProUGUI TargetsTotalReadout;
     public TextMeshProUGUI TargetsCaughtReadout;
@@ -227,7 +231,7 @@ public class PlayerBehaviourScript : MonoBehaviour
                 CameraBehaviour.SnapToPlayer(true);
 
                 //set velocity
-                body.velocity = new Vector3(horizInput * SPEED_MULTIPLIER, body.velocity.y, vertInput * SPEED_MULTIPLIER);
+                body.velocity = new Vector3(horizInput * SPEED_MULTIPLIER * loveVelocityMultiplier, body.velocity.y, vertInput * SPEED_MULTIPLIER * loveVelocityMultiplier);
 
                 //transform look in direction of velocity
                 transform.LookAt(transform.position + Vector3.Normalize(new Vector3(body.velocity.x,0.0f,body.velocity.z)));
@@ -277,6 +281,7 @@ public class PlayerBehaviourScript : MonoBehaviour
             int value = collision.gameObject.GetComponent<BasicNPCBehaviourScript>().GetValue();
             score += value;
             TargetsCaught++;
+            loveVelocityMultiplier += loveVelocityIncrease;
             timer.AppendTime(value/3);
             value = -1;
             Instantiate(ParticleSpawner, new Vector3(collision.transform.position.x,collision.transform.position.y - collision.transform.localScale.y / 2, collision.transform.position.z ),collision.transform.rotation);
