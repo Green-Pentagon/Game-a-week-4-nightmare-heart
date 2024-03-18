@@ -14,6 +14,7 @@ public class PlayerBehaviourScript : MonoBehaviour
     private float loveVelocityIncrease = 0.04f; //how much the multiplier increases by per NPC collided with
 
     //win condition stuff
+    public TextMeshProUGUI EndGameText;
     public TextMeshProUGUI TargetsTotalReadout;
     public TextMeshProUGUI TargetsCaughtReadout;
     private int TargetsTotal;
@@ -136,6 +137,7 @@ public class PlayerBehaviourScript : MonoBehaviour
         animator = GetComponent<Animator>();
         //meshRenderer = GetComponent<MeshRenderer>();
 
+        
         jumpForce = -Physics.gravity * body.mass * jumpMultiplier;
         TargetsTotal = GameObject.FindGameObjectsWithTag("Target").Length;
     }
@@ -149,6 +151,7 @@ public class PlayerBehaviourScript : MonoBehaviour
         if (TargetsCaught == TargetsTotal)
         {
             win = true;
+            EndGameText.text = "YOU WIN!";
         }
 
 
@@ -266,6 +269,7 @@ public class PlayerBehaviourScript : MonoBehaviour
                 animator.SetBool("Dead", true);
                 CameraBehaviour.SnapToPlayer(true);
                 Instantiate(ParticleSpawner, new Vector3(transform.position.x, transform.position.y - transform.localScale.y / 2, transform.position.z), transform.rotation);
+                EndGameText.text = "GAME OVER";
                 deathStuffTriggered = true;
             }
 
