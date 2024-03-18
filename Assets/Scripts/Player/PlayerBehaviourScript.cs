@@ -55,6 +55,9 @@ public class PlayerBehaviourScript : MonoBehaviour
     //gliding
     private bool glideInputTriggered = false;
 
+    //death
+    private bool deathStuffTriggered = false;
+
     //debug feedback
     //public Material StateGround;
     //public Material StateAir;
@@ -254,8 +257,14 @@ public class PlayerBehaviourScript : MonoBehaviour
         }
         else//if dead
         {
-            animator.SetBool("Dead", true);
-            CameraBehaviour.SnapToPlayer(true);
+            if (!deathStuffTriggered)
+            {
+                animator.SetBool("Dead", true);
+                CameraBehaviour.SnapToPlayer(true);
+                Instantiate(ParticleSpawner, new Vector3(transform.position.x, transform.position.y - transform.localScale.y / 2, transform.position.z), transform.rotation);
+                deathStuffTriggered = true;
+            }
+
         }
         
     }
