@@ -6,6 +6,7 @@ public class SpawnerBehaviourScript : MonoBehaviour
 {
     private ParticleSystem particleSystem;
     private Transform stainTransform;
+    private bool removedParticleSys = false;
     private float[] rotationRange = { 0.0f,359.0f};
     // Start is called before the first frame update
     void Start()
@@ -18,9 +19,14 @@ public class SpawnerBehaviourScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!particleSystem.isPlaying)
+        if (!removedParticleSys)
         {
-            Destroy(gameObject);
+            if (!particleSystem.isPlaying)
+            {
+                removedParticleSys = true;
+                Destroy(particleSystem);
+            }
         }
+        
     }
 }
