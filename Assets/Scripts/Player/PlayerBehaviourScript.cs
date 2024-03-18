@@ -16,11 +16,9 @@ public class PlayerBehaviourScript : MonoBehaviour
     private int TargetsCaught;
     private bool win = false;
 
-    //debug feedback
-    public Material StateGround;
-    public Material StateAir;
-    public Material StateGlide;
-    private MeshRenderer meshRenderer;
+    //Animator
+    private Animator animator;
+    //Grounded, MidAir, Gliding, Dead
 
     //Timer mechanic
     public TextMeshProUGUI scoreText;
@@ -32,7 +30,7 @@ public class PlayerBehaviourScript : MonoBehaviour
     private Rigidbody body;
 
     //ground check
-    private float floatingOffGroundOffset = 0.75f; //CHANGE ME IF YOU WISH THE PLAYER TO FLOAT FURTHER OR CLOSER TO GROUND
+    private float floatingOffGroundOffset = 2.0f; //CHANGE ME IF YOU WISH THE PLAYER TO FLOAT FURTHER OR CLOSER TO GROUND
 
     //Camera
     public Camera Camera;
@@ -53,6 +51,12 @@ public class PlayerBehaviourScript : MonoBehaviour
 
     //gliding
     private bool glideInputTriggered = false;
+
+    //debug feedback
+    //public Material StateGround;
+    //public Material StateAir;
+    //public Material StateGlide;
+    //private MeshRenderer meshRenderer;
 
 
     public void Kill()//kills player
@@ -119,7 +123,8 @@ public class PlayerBehaviourScript : MonoBehaviour
         body = GetComponent<Rigidbody>();
         timer = GetComponent<TimerBehaviourScript>();
         CameraBehaviour = Camera.GetComponent<CameraBehaviourScript>();
-        meshRenderer = GetComponent<MeshRenderer>();
+        animator = GetComponent<Animator>();
+        //meshRenderer = GetComponent<MeshRenderer>();
 
         jumpForce = -Physics.gravity * body.mass * jumpMultiplier;
         TargetsTotal = GameObject.FindGameObjectsWithTag("Target").Length;
@@ -147,16 +152,16 @@ public class PlayerBehaviourScript : MonoBehaviour
             gliding = !gliding;
             ToggleGlide(gliding);
             glideInputTriggered = true;
-
+            animator.SetBool("Gliding", true);
             //Debug!
-            if (gliding)
-            {
-                meshRenderer.material = StateGlide;
-            }
-            else
-            {
-                meshRenderer.material = StateAir;
-            }
+            //if (gliding)
+            //{
+            //    meshRenderer.material = StateGlide;
+            //}
+            //else
+            //{
+            //    meshRenderer.material = StateAir;
+            //}
         }
         else if (Input.GetKeyUp(KeyCode.Mouse0))
         {
@@ -171,7 +176,8 @@ public class PlayerBehaviourScript : MonoBehaviour
             CameraBehaviour.SnapToPlayer(!CameraBehaviour.IsSnappingToPlayer());
             CameraBehaviour.SetLocation(cameraToCursorHitPos.point);
         }
-        else if (Input.GetKeyDown(KeyCode.Space) && !midAir)
+        
+        if (Input.GetKeyDown(KeyCode.Space) && !midAir)
         {
             StartCoroutine(Jump());
         }
@@ -184,7 +190,7 @@ public class PlayerBehaviourScript : MonoBehaviour
                 FallingContraints(false);
                 ToggleGlide(true);
                 midAir = false;
-                meshRenderer.material = StateGround;
+                //meshRenderer.material = StateGround;
             }
         }
         else//if player is on ground
@@ -194,10 +200,11 @@ public class PlayerBehaviourScript : MonoBehaviour
                 FallingContraints(true);
                 ToggleGlide(false);
                 midAir = true;
-                meshRenderer.material = StateAir;
+                //meshRenderer.material = StateAir;
             }
         }
 
+        animator.SetBool("MidAir", midAir);
     }
 
     private void FixedUpdate()
@@ -216,6 +223,8 @@ public class PlayerBehaviourScript : MonoBehaviour
 
                 //transform look in direction of velocity
                 transform.LookAt(transform.position + Vector3.Normalize(new Vector3(body.velocity.x,0.0f,body.velocity.z)));
+
+                animator.SetBool("Moving", true);
             }
             else
             {
@@ -230,6 +239,7 @@ public class PlayerBehaviourScript : MonoBehaviour
                 LookAtPosition = new Vector3(cameraToCursorHitPos.point.x, transform.position.y, cameraToCursorHitPos.point.z);
                 transform.LookAt(LookAtPosition);
 
+                animator.SetBool("Moving", false);
                 ////accidentally madea  buggy free-roaming camera, not useful for this project but keeping it in if it may come in useful for any future re-working.
                 //if (!CameraBehaviour.IsSnappingToPlayer())
                 //{
@@ -239,6 +249,7 @@ public class PlayerBehaviourScript : MonoBehaviour
         }
         else//if dead
         {
+            animator.SetBool("Dead", true);
             CameraBehaviour.SnapToPlayer(true);
         }
         
